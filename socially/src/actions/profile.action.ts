@@ -2,13 +2,18 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import { getDbUserId } from "./user.action";
 import prisma from "@/lib/prisma";
+import { getDbUserId } from "./user.action";
 
 export async function getProfileByUsername(username: string) {
   try {
-    const user = await prisma.user.findUnique({
-      where: { username: username },
+    console.log("Fetching profile for username:", username);
+    
+    // Fetch all users with this username (should only be 1 due to unique constraint)
+    const users = await prisma.user.findMany({
+      where: { 
+        username: username
+      },
       select: {
         id: true,
         name: true,
@@ -26,9 +31,13 @@ export async function getProfileByUsername(username: string) {
           },
         },
       },
+      take: 1 // Only get the first result
     });
 
-    return user;
+    // Return the first user if found and username matches exactly
+    const user = users[0];
+    return (user && user.username === username) ? user : null;
+    
   } catch (error) {
     console.error("Error fetching profile:", error);
     throw new Error("Failed to fetch profile");
@@ -176,20 +185,21 @@ export async function updateProfile(formData: FormData) {
 }
 
 export async function isFollowing(userId: string) {
-  try {
-    const currentUserId = await getDbUserId();
-    if (!currentUserId) return false;
+    
+    try {
+        const currentUserId = await getDbUserId();
+        if (!currentUserId) return false;
 
-    const follow = await prisma.follows.findUnique({
-      where: {
-        followerId_followingId: {
-          followerId: currentUserId,
-          followingId: userId,
-        },
-      },
-    });
+        const follow = await prisma.follows.findUnique({
+            where: {
+                followerId_followingId: {
+                    followerId: currentUserId,
+                    followingId: userId,
+                },
+            },
+        });
 
-    return !!follow;
+        return !!follow;
   } catch (error) {
     console.error("Error checking follow status:", error);
     return false;
