@@ -1,21 +1,22 @@
-"use client"
+"use client";
 
-import { useUser } from '@clerk/nextjs';
-import React, { useState } from 'react'
-import { Card, CardContent } from './ui/card';
-import { Avatar, AvatarImage } from './ui/avatar';
-import { Textarea } from './ui/textarea';
-import { Button } from './ui/button';
-import { ImageIcon, Loader2Icon, SendIcon } from 'lucide-react';
-import { createPost } from '@/actions/post.action';
-import toast from 'react-hot-toast';
+import { useUser } from "@clerk/nextjs";
+import { useState } from "react";
+import { Card, CardContent } from "./ui/card";
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { Textarea } from "./ui/textarea";
+import { ImageIcon, Loader2Icon, SendIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import { createPost } from "@/actions/post.action";
+import toast from "react-hot-toast";
+import ImageUpload from "./ImageUpload";
 
 function CreatePost() {
-    const { user } = useUser();
-    const [content, setContent] = useState("");
-    const [imageUrl, setImageUrl] = useState("");
-    const [isPosting, setIsPosting] = useState(false);
-    const [showImageUpload, setShowImageUpload] = useState(false);
+  const { user } = useUser();
+  const [content, setContent] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [isPosting, setIsPosting] = useState(false);
+  const [showImageUpload, setShowImageUpload] = useState(false);
 
   const handleSubmit = async () => {
     if (!content.trim() && !imageUrl) return;
@@ -56,7 +57,7 @@ function CreatePost() {
             />
           </div>
 
-          {/* {(showImageUpload || imageUrl) && (
+          {(showImageUpload || imageUrl) && (
             <div className="border rounded-lg p-4">
               <ImageUpload
                 endpoint="postImage"
@@ -67,8 +68,9 @@ function CreatePost() {
                 }}
               />
             </div>
-          )} */}
-            <div className="flex items-center justify-between border-t pt-4">
+          )}
+
+          <div className="flex items-center justify-between border-t pt-4">
             <div className="flex space-x-2">
               <Button
                 type="button"
@@ -99,11 +101,10 @@ function CreatePost() {
                 </>
               )}
             </Button>
-            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
   );
-
 }
 export default CreatePost;
