@@ -22,8 +22,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Socially",
-  description: "A modren social media pet app",
+  title: "Drifter",
+  description: "You can moves freely and explores in this modren social media app",
 };
 
 export default function RootLayout({
